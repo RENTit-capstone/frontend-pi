@@ -29,52 +29,52 @@ export function createState(initialValue) {
 
 /* ========== Rendering ========== */
 export function render(componentFn, rootElement) {
-    const rerender = () => {
-      const { html, handlers } = componentFn();
-      rootElement.innerHTML = html;
+  const rerender = () => {
+    const { html, handlers } = componentFn();
+    rootElement.innerHTML = html;
   
-      if (handlers && typeof handlers === 'object') {
-        Object.entries(handlers).forEach(([id, handlerFn]) => {
-          const el = document.getElementById(id);
-          if (el) el.onclick = handlerFn;
-        });
-      }
-    };
+    if (handlers && typeof handlers === 'object') {
+      Object.entries(handlers).forEach(([id, handlerFn]) => {
+        const el = document.getElementById(id);
+        if (el) el.onclick = handlerFn;
+      });
+    }
+  };
   
-    registeredStates.forEach((state) => {
-      state.listeners = [];
-      state.listeners.push(rerender);
-    });
+  registeredStates.forEach((state) => {
+    state.listeners = [];
+    state.listeners.push(rerender);
+  });
   
-    rerender();
-  }
+  rerender();
+}
   
 
 /* ========== Fetch Helper ========== */
 export async function apiFetch(endpoint, { method = 'GET', body = null, headers = {} } = {}) {
-    const baseUrl = 'http://localhost:8000';
+  const baseUrl = 'http://localhost:8000';
 
-    const options = {
-        method,
-        headers: {
-            'Content-Type': 'application/json',
-            ...headers,
-        },
-    };
+  const options = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+  };
 
-    if (body) {
-        options.body = JSON.stringify(body);
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+
+  try {
+    const res = await fetch(`${baseUrl}${endpoint}`, options);
+    if (!res.ok) {
+      const error = await res.test();
+      throw new Error(`API Error (${res.status}): ${error}`);
     }
-
-    try {
-        const res = await fetch(`${baseUrl}${endpoint}`, options);
-        if (!res.ok) {
-            const error = await res.test();
-            throw new Error(`API Error (${res.status}): ${error}`);
-        }
-        return res.json();
-    } catch (err) {
-        console.error('Fetch failed:', err.message);
-        throw err;
-    }
+    return res.json();
+  } catch (err) {
+    console.error('Fetch failed:', err.message);
+    throw err;
+  }
 }
