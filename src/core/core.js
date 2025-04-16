@@ -1,23 +1,38 @@
 /* ========== State Management ========== */
+const registeredStates = [];
+
 export function createState(initialValue) {
-    let value = initialValue;
-    const listeners = [];
-
-    const get = () => value;
-
-    const set = (newValue) => {
-        value = newValue;
-        listeners.forEach((listener) => listener(value));
+    const state = {
+        value: initialValue,
+        listeners: [],
     };
 
-    const subscribe = (callback) => listeners.push(callback);
+    const get = () => state.value;
+
+    const set = (newValue) => {
+        state.value = newValue;
+        state.listeners.forEach((listener) => listener(value));
+    };
+
+    const subscribe = (listener) => state.listeners.push(listener);
+
+    registeredStates.push(state);
 
     return [get, set, subscribe];
 }
 
 /* ========== Rendering ========== */
-export function render() {
+export function render(componentFn, rootElement) {
+    const rerender = () => {
+        rootElement.innerHTML = componentFn();
+    };
 
+    registeredStates.forEach((state) => {
+        state.listeners = [];
+        state.listeners.push(rerender);
+    });
+
+    rerender();
 }
 
 /* ========== Fetch Helper ========== */
