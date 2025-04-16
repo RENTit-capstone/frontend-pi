@@ -1,14 +1,24 @@
-import { createState, render, apiFetch } from './core/core.js';
+import { createState, render } from './core/core.js';
+
+const [count, setCount] = createState(0);
 
 const Counter = () => {
-    const [count, setCount] = createState(0);
-
-    return `
-        <div>
-            <h2> 카운트: ${count()}</h2>
-            <button onclick="(${() => setCount(count() + 1)})()">+1</button>
-        </div>
+  
+    const html = `
+      <div>
+        <h2 id="count">카운트: ${count()}</h2>
+        <button id="increment">+1</button>
+      </div>
     `;
-}
+  
+    const handlers = {
+      increment: () => {
+        setCount(count() + 1);
+    },
+    };
+  
+    return { html, handlers };
+  };
+  
 
-render(Counter, document.getElementById('app'));
+render(Counter, document.getElementById("app"));
