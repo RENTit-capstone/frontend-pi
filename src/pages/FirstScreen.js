@@ -22,7 +22,7 @@ export const FirstScreen = ({ onSelect }) => {
 
   return {
     html: `
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh;">
+      <div class="screen-container">
         <h2>원하는 작업을 선택하세요</h2>
         ${buttons.map(b => b.html).join("")}
       </div>
