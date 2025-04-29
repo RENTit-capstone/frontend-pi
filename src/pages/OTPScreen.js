@@ -1,4 +1,4 @@
-import { createState, render } from "../core/core.js";
+import { createState } from "../core/core.js";
 import Button from "../components/Button.js";
 
 const [otp, setOtp] = createState("");
@@ -37,12 +37,12 @@ export const OTPScreen = () => {
 
   return {
     html: `
-      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh;">
-        <h2>OTP를 입력하세요</h2>
-        <div style="display:flex; gap:10px; margin-bottom: 20px;">
-          ${[0,1,2,3].map(i => `<div style="width:40px; height:40px; font-size:2rem; text-align:center; border:1px solid #ccc;">${otp()[i] || ""}</div>`).join("")}
+      <div class="screen-container">
+        <h2 class="otp-title">OTP를 입력하세요</h2>
+        <div class="otp-display">
+          ${[0,1,2,3].map(i => `<div class="otp-digit">${otp()[i] || ""}</div>`).join("")}
         </div>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 200px;">
+        <div class="otp-pad">
           ${digitButtons.map(b => b.html).join("")}
           ${backHtml}
           ${clearHtml}
