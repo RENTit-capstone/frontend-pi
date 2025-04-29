@@ -1,10 +1,6 @@
-import { createState } from "../core/core.js";
 import Button from "../components/Button.js";
 
-const [selectedAction, setSelectedAction] = createState(null);
-
-export const FirstScreen = () => {
-
+export const FirstScreen = ({ onSelect }) => {
   const actions = [
     { label: "물건 맡기기", value: "store" },
     { label: "물건 빌리기", value: "borrow" },
@@ -15,10 +11,10 @@ export const FirstScreen = () => {
   const buttons = actions.map(({ label, value }) => {
     const { html, handlers } = Button({
       id: value,
-      label: label,
+      label,
       onClick: () => {
-        setSelectedAction(value);
-        console.log(value)
+        onSelect(value);
+        console.log("선택된 동작:", value);
       }
     });
     return { html, handlers };
