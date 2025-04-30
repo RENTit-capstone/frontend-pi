@@ -11,6 +11,7 @@ export const OTPScreen = () => {
 
   const clearOtp = () => setOtp("");
   const deleteLast = () => setOtp(otp().slice(0, -1));
+  const submitOtp = () => console.log(`User submitted OTP: ${otp()}`);
 
   const digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 
@@ -35,6 +36,12 @@ export const OTPScreen = () => {
     onClick: deleteLast
   });
 
+  const { html: submitHtml, handlers: submitHandlers } = Button({
+    id: "submit",
+    label: "제출",
+    onClick: submitOtp
+  });
+
   return {
     html: `
       <div class="screen-container">
@@ -46,13 +53,17 @@ export const OTPScreen = () => {
           ${digitButtons.map(b => b.html).join("")}
           ${backHtml}
           ${clearHtml}
+          <div class="otp-submit-button-wrapper">
+            ${submitHtml}
+          </div>
         </div>
       </div>
     `,
     handlers: Object.assign({},
       ...digitButtons.map(b => b.handlers),
       clearHandlers,
-      backHandlers
+      backHandlers,
+      submitHandlers
     )
   };
 };
