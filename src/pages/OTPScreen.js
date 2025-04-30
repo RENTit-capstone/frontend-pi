@@ -6,7 +6,7 @@ const [otp, setOtp] = createState("");
 export const OTPScreen = () => {
 
   const appendDigit = (digit) => {
-    if (otp().length < 4) setOtp(otp() + digit);
+    if (otp().length < 5) setOtp(otp() + digit);
   };
 
   const clearOtp = () => setOtp("");
@@ -47,7 +47,7 @@ export const OTPScreen = () => {
       <div class="screen-container">
         <h2 class="otp-title">OTP를 입력하세요</h2>
         <div class="otp-display">
-          ${[0,1,2,3].map(i => `<div class="otp-digit">${otp()[i] || ""}</div>`).join("")}
+          ${[0,1,2,3,4].map(i => `<div class="otp-digit">${otp()[i] || ""}</div>`).join("")}
         </div>
         <div class="otp-pad">
           ${digitButtons.map(b => b.html).join("")}
