@@ -1,17 +1,21 @@
 import { createState } from "../core/core.js";
 import Button from "../components/Button.js";
+import { submitOtp } from "../services/api.js";
 
 const [otp, setOtp] = createState("");
 
-export const OTPScreen = () => {
-
+export const OTPScreen = ({ action }) => {
   const appendDigit = (digit) => {
     if (otp().length < 5) setOtp(otp() + digit);
   };
 
   const clearOtp = () => setOtp("");
   const deleteLast = () => setOtp(otp().slice(0, -1));
-  const submitOtp = () => console.log(`User submitted OTP: ${otp()}`);
+
+  const handleSubmit = () => {
+    if (otp().length < 5) return;
+    submitOtp(otp(), action);
+  };
 
   const digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 
@@ -19,7 +23,7 @@ export const OTPScreen = () => {
     const { html, handlers } = Button({
       id: `digit-${digit}`,
       label: digit,
-      onClick: () => appendDigit(digit)
+      onClick: () => appendDigit(digit),
     });
     return { html, handlers };
   });
@@ -27,19 +31,19 @@ export const OTPScreen = () => {
   const { html: clearHtml, handlers: clearHandlers } = Button({
     id: "clear",
     label: "지우기",
-    onClick: clearOtp
+    onClick: clearOtp,
   });
 
   const { html: backHtml, handlers: backHandlers } = Button({
     id: "backspace",
     label: "←",
-    onClick: deleteLast
+    onClick: deleteLast,
   });
 
   const { html: submitHtml, handlers: submitHandlers } = Button({
     id: "submit",
     label: "제출",
-    onClick: submitOtp
+    onClick: handleSubmit,
   });
 
   return {
@@ -47,10 +51,10 @@ export const OTPScreen = () => {
       <div class="screen-container">
         <h2 class="otp-title">OTP를 입력하세요</h2>
         <div class="otp-display">
-          ${[0,1,2,3,4].map(i => `<div class="otp-digit">${otp()[i] || ""}</div>`).join("")}
+          ${[0, 1, 2, 3, 4].map((i) => `<div class="otp-digit">${otp()[i] || ""}</div>`).join("")}
         </div>
         <div class="otp-pad">
-          ${digitButtons.map(b => b.html).join("")}
+          ${digitButtons.map((b) => b.html).join("")}
           ${backHtml}
           ${clearHtml}
           <div class="otp-submit-button-wrapper">
@@ -59,11 +63,12 @@ export const OTPScreen = () => {
         </div>
       </div>
     `,
-    handlers: Object.assign({},
-      ...digitButtons.map(b => b.handlers),
+    handlers: Object.assign(
+      {},
+      ...digitButtons.map((b) => b.handlers),
       clearHandlers,
       backHandlers,
       submitHandlers
-    )
+    ),
   };
 };

@@ -19,38 +19,43 @@ export function createState(initialValue) {
   };
 
   const subscribe = (listener) => {
-    state.listeners.push(listener);
+    if (typeof listener === 'function') {
+      state.listeners.push(listener);
+    }
   };
 
   registeredStates.push(state);
-
   return [get, set, subscribe];
 }
 
-/* ========== Rendering ========== */
+
+/* ========== Component Rendering ========== */
 export function render(componentFn, rootElement) {
   const rerender = () => {
     const { html, handlers } = componentFn();
     rootElement.innerHTML = html;
-  
+
     if (handlers && typeof handlers === 'object') {
       Object.entries(handlers).forEach(([id, handlerFn]) => {
         const el = document.getElementById(id);
-        if (el) el.onclick = handlerFn;
+        if (el && typeof handlerFn === 'function') {
+          el.onclick = handlerFn;
+        }
       });
     }
   };
-  
+
   registeredStates.forEach((state) => {
-    state.listeners = [];
-    state.listeners.push(rerender);
+    if (!state.listeners.includes(rerender)) {
+      state.listeners.push(rerender);
+    }
   });
-  
+
   rerender();
 }
-  
 
-/* ========== Fetch Helper ========== */
+
+/* ========== API Fetch Helper ========== */
 export async function apiFetch(endpoint, { method = 'GET', body = null, headers = {} } = {}) {
   const baseUrl = 'http://localhost:8000';
 
@@ -69,12 +74,12 @@ export async function apiFetch(endpoint, { method = 'GET', body = null, headers 
   try {
     const res = await fetch(`${baseUrl}${endpoint}`, options);
     if (!res.ok) {
-      const error = await res.test();
+      const error = await res.text();
       throw new Error(`API Error (${res.status}): ${error}`);
     }
     return res.json();
   } catch (err) {
-    console.error('Fetch failed:', err.message);
+    console.error('[FETCH] Failed:', err.message);
     throw err;
   }
 }

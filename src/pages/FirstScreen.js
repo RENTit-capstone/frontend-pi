@@ -9,24 +9,26 @@ export const FirstScreen = ({ onSelect }) => {
   ];
 
   const buttons = actions.map(({ label, value }) => {
-    const { html, handlers } = Button({
+    const button = Button({
       id: value,
       label,
       onClick: () => {
         onSelect(value);
         console.log("선택된 동작:", value);
-      }
+      },
     });
-    return { html, handlers };
+
+    return button;
   });
 
-  return {
-    html: `
-      <div class="screen-container">
-        <h2>원하는 작업을 선택하세요</h2>
-        ${buttons.map(b => b.html).join("")}
-      </div>
-    `,
-    handlers: Object.assign({}, ...buttons.map(b => b.handlers))
-  };
+  const html = `
+    <div class="screen-container">
+      <h2>원하는 작업을 선택하세요</h2>
+      ${buttons.map((b) => b.html).join("")}
+    </div>
+  `;
+
+  const handlers = Object.assign({}, ...buttons.map((b) => b.handlers));
+
+  return { html, handlers };
 };
