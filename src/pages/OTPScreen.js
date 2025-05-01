@@ -1,9 +1,9 @@
-import { createState } from "../core/core.js";
+import { createState, apiFetch } from "../core/core.js";
 import Button from "../components/Button.js";
 
 const [otp, setOtp] = createState("");
 
-export const OTPScreen = () => {
+export const OTPScreen = ({ action }) => {
 
   const appendDigit = (digit) => {
     if (otp().length < 5) setOtp(otp() + digit);
@@ -11,7 +11,27 @@ export const OTPScreen = () => {
 
   const clearOtp = () => setOtp("");
   const deleteLast = () => setOtp(otp().slice(0, -1));
-  const submitOtp = () => console.log(`User submitted OTP: ${otp()}`);
+  const submitOtp = () => {
+    if (otp().length < 5) {
+      // Do Nothing
+      return
+    }
+    apiFetch("/api/verify", {
+      method: 'POST',
+      body: { otp: otp(), action: action }
+    })
+    .then(() => {
+      return pollOtpResult(otp());  // ← 추가
+    })
+    .then(result => {
+      console.log("최종 인증 결과:", result);
+      // 여기서 다음 화면으로 전환하거나, 결과에 따라 행동
+    })
+    .catch(err => {
+      console.error("OTP 인증 실패:", err);
+    });
+    
+  };
 
   const digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 

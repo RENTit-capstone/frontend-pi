@@ -69,7 +69,7 @@ export async function apiFetch(endpoint, { method = 'GET', body = null, headers 
   try {
     const res = await fetch(`${baseUrl}${endpoint}`, options);
     if (!res.ok) {
-      const error = await res.test();
+      const error = await res.text();
       throw new Error(`API Error (${res.status}): ${error}`);
     }
     return res.json();
