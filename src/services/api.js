@@ -1,3 +1,5 @@
+import { apiFetch } from "../core/core.js";
+
 export async function pollOtpResult(otp, interval = 1000, maxAttempts = 10) {
     return new Promise((resolve, reject) => {
       let attempts = 0;

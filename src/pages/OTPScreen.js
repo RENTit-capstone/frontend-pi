@@ -1,5 +1,6 @@
 import { createState, apiFetch } from "../core/core.js";
 import Button from "../components/Button.js";
+import { pollOtpResult } from "../services/api.js"
 
 const [otp, setOtp] = createState("");
 
@@ -21,11 +22,10 @@ export const OTPScreen = ({ action }) => {
       body: { otp: otp(), action: action }
     })
     .then(() => {
-      return pollOtpResult(otp());  // ← 추가
+      return pollOtpResult(otp());
     })
     .then(result => {
       console.log("최종 인증 결과:", result);
-      // 여기서 다음 화면으로 전환하거나, 결과에 따라 행동
     })
     .catch(err => {
       console.error("OTP 인증 실패:", err);
