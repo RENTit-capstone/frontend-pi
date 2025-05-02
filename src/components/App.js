@@ -1,9 +1,11 @@
 import { FirstScreen } from "../pages/FirstScreen.js";
 import { OTPScreen } from "../pages/OTPScreen.js";
+import { ActionScreen } from "../pages/ActionScreen.js";
 import { createState } from "../core/core.js";
 
 const [currentPage, setCurrentPage] = createState("first");
 const [selectedAction, setSelectedAction] = createState(null);
+const [userSession, setUserSession] = createState(null);
 
 const renderPage = () => {
   if (currentPage() === "first") {
@@ -16,7 +18,20 @@ const renderPage = () => {
   }
 
   if (currentPage() === "otp") {
-    return OTPScreen({ action: selectedAction() });
+    return OTPScreen({
+      action: selectedAction(),
+      onVerified: (data) => {
+        setUserSession(data);
+        setCurrentPage("action");
+      },
+    });
+  }
+
+  if (currentPage() === "action") {
+    return ActionScreen({
+      action: selectedAction(),
+      data: userSession(),
+    });
   }
 
   return {

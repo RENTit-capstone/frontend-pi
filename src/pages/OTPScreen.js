@@ -4,7 +4,7 @@ import { submitOtp } from "../services/api.js";
 
 const [otp, setOtp] = createState("");
 
-export const OTPScreen = ({ action }) => {
+export const OTPScreen = ({ action, onVerified }) => {
   const appendDigit = (digit) => {
     if (otp().length < 5) setOtp(otp() + digit);
   };
@@ -14,7 +14,14 @@ export const OTPScreen = ({ action }) => {
 
   const handleSubmit = () => {
     if (otp().length < 5) return;
-    submitOtp(otp(), action);
+    submitOtp(otp(), action)
+    .then((result) => {
+      console.log("최종 인증 결과:", result);
+      onVerified(result);
+    })
+    .catch((err) => {
+      console.error("OTP 인증 실패:", err);
+    });
   };
 
   const digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
