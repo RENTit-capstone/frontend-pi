@@ -20,7 +20,9 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
             id: "to-slot-select",
             label: "다음",
             onClick: () => {
-                if (setSelectedItem()) setPhase("select_slot");
+                if (selectedItem()) {
+                    setPhase("select_slot");
+                }
             },
         });
         return {
@@ -71,7 +73,7 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
             html: `
                 <div class="screen-container">
                     <h2>작업이 완료되었습니다</h2>
-                    <p>감사합니다, ${userName}닙!</p>
+                    <p>감사합니다, ${userName}님!</p>
                 </div>
             `,
             handlers: {},
