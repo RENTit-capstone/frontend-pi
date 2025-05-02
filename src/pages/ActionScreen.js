@@ -37,7 +37,7 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
         };
     };
 
-    const renderSlotSelection = () => {
+    const renderSlotSelectionStoreOrReturn = () => {
         const slotButtons = availableSlots.map((slot) => {
             const { html, handlers } = Button({
                 id: `slot-${slot}`,
@@ -66,6 +66,39 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
             `,
             handlers: Object.assign({}, ...slotButtons.map((b) => b.handlers), confirmHandlers)
         };
+    };
+
+    const renderSlotDisplayBorrowOrRetrieve = () => {
+        const slot = selectedItem()?.slot;
+        const slotInfo = slot ? `${slot}번 칸에서 꺼내주세요` : "다른 사물함에 있습니다.";
+
+        const { html: confirmHtml, handlers: confirmHandlers } = Button({
+            id: "confirm-perform",
+            label: "확인",
+            onClick: () => {
+                console.log("실행 요청:", action, selectedItem(), slot);
+                setPhase("done");
+            }
+        });
+
+        return {
+            html: `
+                <div class="screen-container">
+                    <h2>선택한 물건의 위치</h2>
+                    <p>${slotInfo}</p>
+                    <div class="action-button-wrapper">${confirmHtml}</div>
+                </div>
+            `,
+            handlers: confirmHandlers
+        };
+    };
+
+    const renderSlotSelection = () => {
+        if (action === "store" || action === "return") {
+            return renderSlotSelectionStoreOrReturn();
+        } else if (action === "borrow" || action === "retrieve") {
+            return renderSlotDisplayBorrowOrRetrieve();
+        }
     };
 
     const renderDone = () => {
