@@ -7,34 +7,36 @@ const [selectedSlot, setSelectedSlot] = createState(null);
 
 export const ActionScreen = ({ action, userName, items, availableSlots }) => {
     const renderItemSelection = () => {
-        const buttons = items.map((item) => {
+        const itemButtons = items.map((item) => {
             const { html, handlers } = Button({
                 id: `item-${item.item_id}`,
-                lable: item.name,
+                label: item.name,
                 onClick: () => setSelectedItem(item)
             });
             return { html, handlers };
         });
 
-        const nextButton = Button({
+        const { html: nextHtml, handlers: nextHandlers } = Button({
             id: "to-slot-select",
             label: "다음",
-            onClick: () => setSelectedItem(item)
+            onClick: () => {
+                if (setSelectedItem()) setPhase("select_slot");
+            },
         });
         return {
             html: `
                 <div class="screen-container">
-                    <h2>${username}님, 물건을 선택하세요</h2>
-                    ${buttons.map(b => b.html).join("")}
-                    ${nextButton.html}
+                    <h2>${userName}님, 물건을 선택하세요</h2>
+                    ${itemButtons.map(b => b.html).join("")}
+                    <div class="action-button-wrapper">${nextHtml}</div>
                 </div>
             `,
-            handlers: Object.assign({}, ...buttons.map(b => b.handlers), nextButton.handlers)
+            handlers: Object.assign({}, ...itemButtons.map(b => b.handlers), nextHandlers),
         };
     };
 
     const renderSlotSelection = () => {
-        const buttons = availableSlots.map((slot) => {
+        const slotButtons = availableSlots.map((slot) => {
             const { html, handlers } = Button({
                 id: `slot-${slot}`,
                 label: `${slot}번 칸`,
@@ -43,11 +45,11 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
             return { html, handlers };
         });
 
-        const submitButton = Button({
+        const { html: confirmHtml, handlers: confirmHandlers } = Button({
             id: "confirm-perform",
             label: "확인",
             onClick: () => {
-                console.log("실행: ", action, selectedItem(), selectedSlot());
+                console.log("실행 요청:", action, selectedItem(), selectedSlot());
                 setPhase("done");
             }
         });
@@ -56,11 +58,11 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
             html: `
                 <div class="screen-container">
                     <h2>사용할 칸을 선택하세요</h2>
-                    ${buttons.map(b  => b.html).join("")}
-                    ${submitButton.html}
+                    ${slotButtons.map(b  => b.html).join("")}
+                    <div class="action-button-wrapper">${confirmHtml}</div>
                 </div>
             `,
-            handlers: Object.assign({}, ...buttons.map(b => b.handlers), submitButton.handlers)
+            handlers: Object.assign({}, ...slotButtons.map((b) => b.handlers), confirmHandlers)
         };
     };
 
@@ -72,7 +74,7 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
                     <p>감사합니다, ${userName}닙!</p>
                 </div>
             `,
-            handlers: {}
+            handlers: {},
         };
     };
 

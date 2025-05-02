@@ -30,7 +30,9 @@ const renderPage = () => {
   if (currentPage() === "action") {
     return ActionScreen({
       action: selectedAction(),
-      data: userSession(),
+      userName: userSession().user_name,
+      items: userSession().items,
+      availableSlots: userSession().available_slots,
     });
   }
 
