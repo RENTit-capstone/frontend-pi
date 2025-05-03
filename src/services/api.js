@@ -6,7 +6,7 @@ export async function pollOtpResult(otp, interval = 1000, maxAttempts = 10) {
 
     const check = async () => {
       try {
-        const result = await apiFetch(`/api/verify/result?otp=${otp}`);
+        const result = await apiFetch(`/api/verify/result`);
         console.log("[OTP] 인증 상태:", result);
 
         if (result.verified !== null) {
