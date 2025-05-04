@@ -51,9 +51,19 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
         const { html: confirmHtml, handlers: confirmHandlers } = Button({
             id: "confirm-perform",
             label: "확인",
-            onClick: () => {
+            onClick: async () => {
                 console.log("실행 요청:", action, selectedItem(), selectedSlot());
-                setPhase("done");
+                const res = await performLockerAction({
+                    action: action,
+                    item: selectedItem(),
+                    slot: selectedSlot()
+                })
+
+                if (res.success) {
+                    setPhase("done");
+                } else {
+                    alert("사물함 동작에 실패했습니다. 다시 시도해주세요.")
+                }
             }
         });
 
@@ -76,9 +86,18 @@ export const ActionScreen = ({ action, userName, items, availableSlots }) => {
         const { html: confirmHtml, handlers: confirmHandlers } = Button({
             id: "confirm-perform",
             label: "확인",
-            onClick: () => {
+            onClick: async () => {
                 console.log("실행 요청:", action, selectedItem(), slot);
-                setPhase("done");
+                const res = await performLockerAction({
+                    action: action,
+                    item: selectedItem,
+                    slot: selectedSlot
+                });
+                if (res.success) {
+                    setPhase("done");
+                } else {
+                    alert("사물함 동작에 실패했습니다. 다시 시도해주세요.")
+                }
             }
         });
 
