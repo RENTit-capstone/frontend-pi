@@ -46,3 +46,20 @@ export async function submitOtp(otp, action) {
     throw err;
   }
 }
+
+export async function performLockerAction({ action, item, slot }) {
+  try {
+    const response = await apiFetch("/api/locker/perform", {
+      method: "POST",
+      body: {
+        action,
+        item,
+        slot
+      }
+    });
+    return response;
+  } catch (err) {
+    console.error("[API] performLockerAction failed:", err);
+    return { success: false };
+  }
+}

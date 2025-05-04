@@ -1,5 +1,6 @@
 import { createState } from "../core/core.js";
 import Button from "../components/Button.js";
+import { performLockerAction } from "../services/api.js"
 
 const [phase, setPhase] = createState("select_item");
 const [selectedItem, setSelectedItem] = createState(null);
