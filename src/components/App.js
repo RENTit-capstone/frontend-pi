@@ -15,6 +15,14 @@ const [userSession, setUserSession] = createState(null);
 const [selectedItem, setSelectedItem] = createState(null);
 const [selectedSlot, setSelectedSlot] = createState(null);
 
+const resetStates = () => {
+  setCurrentPage("selectAction");
+  setSelectedAction(null)
+  setUserSession(null)
+  setSelectedItem(null)
+  setSelectedSlot(null)
+}
+
 const renderPage = () => {
   if (currentPage() === "selectAction") {
     return SelectActionPage({
@@ -90,34 +98,38 @@ const renderPage = () => {
     });
   }
 
+  let pollingStarted = false;
   if (currentPage() === "waitForClose") {
-    setTimeout(async () => {
-      let retries = 0;
-      const maxRetries = 10;
-      const interval = 1000;
-      let clsoed = false;
+    if (!pollingStarted) {
+      pollingStarted = true;
+      setTimeout(async () => {
+        let retries = 0;
+        const maxRetries = 10;
+        const interval = 1000;
+        let closed = false;
 
-      while (retries < maxRetries) {
-        const result = await checkSlotClosed();
-        console.log("[POLL] 닫힘 상태:", result.closed);
-        if (result.closed) {
-          closed = true;
-          break;
+        while (retries < maxRetries) {
+          const result = await checkSlotClosed();
+          console.log("[POLL] 닫힘 상태:", result.closed);
+          if (result.closed) {
+            closed = true;
+            break;
+          }
+          retries++;
+          await new Promise(res => setTimeout(res, interval));
         }
-        retries++;
-        await new Promise(res => setTimeout(res, interval));
-      }
 
-      if (closed) {
-        setCurrentPage("complete");
-      } else {
-        if (["store", "return"].includes(selectedAction())) {
-          alert("사물함의 닫힘이 감지되지 않습니다. 다른 칸에 다시 맡겨주세요.");
+        if (closed) {
+          setCurrentPage("final");
+        } else {
+          if (["store", "return"].includes(selectedAction())) {
+            alert("사물함의 닫힘이 감지되지 않습니다. 다른 칸에 다시 맡겨주세요.");
+          }
+          resetStates();
         }
-        setCurrentPage("selectAction");
-      }
-    }, 0);
-
+        pollingStarted = false;
+      }, 0);
+    }
     return WaitForClosePage({
       userName: userSession().user_name,
       slot: selectedSlot(),
