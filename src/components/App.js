@@ -1,11 +1,13 @@
 import { SelectActionPage } from "../pages/SelectActionPage.js";
 import { OTPPage } from "../pages/OTPPage.js";
+import { SelectItemPage } from "../pages/SelectItemPage.js"
 import { ActionScreen } from "../pages/ActionScreen.js";
 import { createState } from "../core/core.js";
 
 const [currentPage, setCurrentPage] = createState("selectAction");
 const [selectedAction, setSelectedAction] = createState(null);
 const [userSession, setUserSession] = createState(null);
+const [selectedItem, setSelectedItem] = createState(null);
 
 const renderPage = () => {
   if (currentPage() === "selectAction") {
@@ -22,8 +24,20 @@ const renderPage = () => {
       action: selectedAction(),
       onVerified: (data) => {
         setUserSession(data);
-        setCurrentPage("action");
+        setCurrentPage("selectItem");
       },
+    });
+  }
+
+  if (currentPage() === "selectItem") {
+    return SelectItemPage({
+      userName: userSession().user_name,
+      items: userSession().items,
+      selectedItem: selectedItem,
+      setSelectedItem: setSelectedItem,
+      onSelect: () => {
+        setCurrentPage("selectSlot")
+      }
     });
   }
 
