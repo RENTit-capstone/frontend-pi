@@ -63,3 +63,15 @@ export async function performLockerAction({ action, item, slot }) {
     return { success: false };
   }
 }
+
+export async function checkSlotClosed() {
+  try {
+    const res = await apiFetch('/api/locker/closed', {
+      method: "GET",
+    });
+    return res;
+  } catch (err) {
+    console.error("[API] checkSlotClosed failed:", err);
+    return { closed: false };
+  }
+}

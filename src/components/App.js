@@ -98,7 +98,7 @@ const renderPage = () => {
       let clsoed = false;
 
       while (retries < maxRetries) {
-        const result = await checkSlotClosed(selectedSlot());
+        const result = await checkSlotClosed();
         console.log("[POLL] 닫힘 상태:", result.closed);
         if (result.closed) {
           closed = true;
