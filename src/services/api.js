@@ -6,7 +6,7 @@ export async function pollOtpResult(otp, interval = 1000, maxAttempts = 10) {
 
     const check = async () => {
       try {
-        const result = await apiFetch(`/api/verify/result?otp=${otp}`);
+        const result = await apiFetch(`/api/verify/result`);
         console.log("[OTP] 인증 상태:", result);
 
         if (result.verified !== null) {
@@ -44,5 +44,22 @@ export async function submitOtp(otp, action) {
   } catch (err) {
     console.error("[OTP] 인증 요청 또는 결과 처리 실패:", err.message);
     throw err;
+  }
+}
+
+export async function performLockerAction({ action, item, slot }) {
+  try {
+    const response = await apiFetch("/api/locker/perform", {
+      method: "POST",
+      body: {
+        action,
+        item,
+        slot
+      }
+    });
+    return response;
+  } catch (err) {
+    console.error("[API] performLockerAction failed:", err);
+    return { success: false };
   }
 }
