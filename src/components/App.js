@@ -3,11 +3,11 @@ import { OTPPage } from "../pages/OTPPage.js";
 import { SelectItemPage } from "../pages/SelectItemPage.js";
 import { SelectSlotPage } from "../pages/SelectSlotPage.js";
 import { DisplaySlotPage } from "../pages/DisplaySlotPage.js";
-
-import { ActionScreen } from "../pages/ActionScreen.js";
+import { WaitForClosePage } from "../pages/WaitForClosePage.js";
+import { FinalPage } from "../pages/FinalPage.js";
 
 import { createState } from "../core/core.js";
-import { performLockerAction } from "../services/api.js";
+import { performLockerAction, checkSlotClosed } from "../services/api.js";
 
 const [currentPage, setCurrentPage] = createState("selectAction");
 const [selectedAction, setSelectedAction] = createState(null);
@@ -42,11 +42,12 @@ const renderPage = () => {
       selectedItem: selectedItem,
       setSelectedItem: setSelectedItem,
       onSelect: () => {
-        if (selectedAction() == "store" || selectedAction() === "return")
+        if (selectedAction() == "store" || selectedAction() === "return") {
           setCurrentPage("selectSlot")
-        else if (selectedAction() == "borrow" || selectedAction() == "retrieve")
+        } else {
           setCurrentPage("displaySlot")
-      }
+        }
+      },
     });
   }
 
@@ -62,12 +63,11 @@ const renderPage = () => {
           slot: selectedSlot(),
         });
         if (res.success) {
-          setCurrentPage("openLocker")
+          setCurrentPage("waitForClose");
         } else {
           alert("사물함 동작에 실패했습니다. 다시 시도해주세요.")
         }
-        
-      }
+      },
     });
   }
 
@@ -82,21 +82,50 @@ const renderPage = () => {
           slot: slotNum,
         });
         if (res.success) {
-          setCurrentPage("openLocker")
+          setCurrentPage("waitForClose");
         } else {
-          alert("사물함 동작에 실패했습니다. 다시 시도해주세요.")
+          alert("사물함 동작에 실패했습니다. 다시 시도해주세요.");
         }
       },
     });
   }
 
-  if (currentPage() === "action") {
-    return ActionScreen({
-      action: selectedAction(),
+  if (currentPage() === "waitForClose") {
+    setTimeout(async () => {
+      let retries = 0;
+      const maxRetries = 10;
+      const interval = 1000;
+      let clsoed = false;
+
+      while (retries < maxRetries) {
+        const result = await checkSlotClosed(selectedSlot());
+        console.log("[POLL] 닫힘 상태:", result.closed);
+        if (result.closed) {
+          closed = true;
+          break;
+        }
+        retries++;
+        await new Promise(res => setTimeout(res, interval));
+      }
+
+      if (closed) {
+        setCurrentPage("complete");
+      } else {
+        if (["store", "return"].includes(selectedAction())) {
+          alert("사물함의 닫힘이 감지되지 않습니다. 다른 칸에 다시 맡겨주세요.");
+        }
+        setCurrentPage("selectAction");
+      }
+    }, 0);
+
+    return WaitForClosePage({
       userName: userSession().user_name,
-      items: userSession().items,
-      availableSlots: userSession().available_slots,
+      slot: selectedSlot(),
     });
+  }
+
+  if (currentPage() === "final") {
+    return FinalPage({ userName: userSession().user_name });
   }
 
   return {
