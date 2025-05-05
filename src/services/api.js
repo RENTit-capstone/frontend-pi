@@ -1,6 +1,6 @@
 import { apiFetch } from "../core/core.js";
 
-export async function pollOtpResult(otp, interval = 1000, maxAttempts = 10) {
+export async function pollOtpResult(interval = 1000, maxAttempts = 10) {
   return new Promise((resolve, reject) => {
     let attempts = 0;
 
@@ -40,7 +40,7 @@ export async function submitOtp(otp, action) {
       body: { otp, action },
     });
 
-    return await pollOtpResult(otp);
+    return await pollOtpResult();
   } catch (err) {
     console.error("[OTP] 인증 요청 또는 결과 처리 실패:", err.message);
     throw err;
@@ -62,4 +62,32 @@ export async function performLockerAction({ action, item, slot }) {
     console.error("[API] performLockerAction failed:", err);
     return { success: false };
   }
+}
+
+export async function pollSlotClosed(interval = 1000, maxAttempts = 20) {
+  return new Promise((resolve, reject) => {
+    let attemps = 0;
+
+    const check = async () => {
+      try {
+        const result = await apiFetch("/api/locker/closed");
+        console.log("[POLL] 닫힘 상태:", result);
+
+        if (result.closed) {
+          resolve(true);
+          return;
+        }
+        if (++attemps >= maxAttempts) {
+          resolve(false);
+          return;
+        }
+
+        setTimeout(check, interval);
+      } catch (err) {
+        reject(err);
+      }
+    };
+
+    check();
+  });
 }
