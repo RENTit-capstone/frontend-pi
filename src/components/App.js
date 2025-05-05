@@ -3,12 +3,12 @@ import { OTPPage } from "../pages/OTPPage.js";
 import { ActionScreen } from "../pages/ActionScreen.js";
 import { createState } from "../core/core.js";
 
-const [currentPage, setCurrentPage] = createState("first");
+const [currentPage, setCurrentPage] = createState("selectAction");
 const [selectedAction, setSelectedAction] = createState(null);
 const [userSession, setUserSession] = createState(null);
 
 const renderPage = () => {
-  if (currentPage() === "first") {
+  if (currentPage() === "selectAction") {
     return SelectActionPage({
       onSelect: (action) => {
         setSelectedAction(action);
