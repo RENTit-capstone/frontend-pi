@@ -19,7 +19,7 @@ export const ActionScreen = ({ action, userName }) => {
                 const res = await performLockerAction({
                     action: action,
                     item: selectedItem,
-                    slot: selectedSlot
+                    slot: slot
                 });
                 if (res.success) {
                     setPhase("done");

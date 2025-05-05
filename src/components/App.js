@@ -2,6 +2,7 @@ import { SelectActionPage } from "../pages/SelectActionPage.js";
 import { OTPPage } from "../pages/OTPPage.js";
 import { SelectItemPage } from "../pages/SelectItemPage.js";
 import { SelectSlotPage } from "../pages/SelectSlotPage.js";
+import { DisplaySlotPage } from "../pages/DisplaySlotPage.js";
 
 import { ActionScreen } from "../pages/ActionScreen.js";
 
@@ -41,7 +42,10 @@ const renderPage = () => {
       selectedItem: selectedItem,
       setSelectedItem: setSelectedItem,
       onSelect: () => {
-        setCurrentPage("selectSlot")
+        if (selectedAction() == "store" || selectedAction() === "return")
+          setCurrentPage("selectSlot")
+        else if (selectedAction() == "borrow" || selectedAction() == "retrieve")
+          setCurrentPage("displaySlot")
       }
     });
   }
@@ -59,12 +63,30 @@ const renderPage = () => {
         });
         if (res.success) {
           setCurrentPage("openLocker")
-
         } else {
           alert("사물함 동작에 실패했습니다. 다시 시도해주세요.")
         }
         
       }
+    });
+  }
+
+  if (currentPage() === "displaySlot") {
+    return DisplaySlotPage({
+      userName: userSession().user_name,
+      selectedItem: selectedItem(),
+      onConfirm: async (slotNum) => {
+        const res = await performLockerAction({
+          action: selectedAction(),
+          item: selectedItem(),
+          slot: slotNum,
+        });
+        if (res.success) {
+          setCurrentPage("openLocker")
+        } else {
+          alert("사물함 동작에 실패했습니다. 다시 시도해주세요.")
+        }
+      },
     });
   }
 
