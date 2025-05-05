@@ -4,7 +4,7 @@ import { submitOtp } from "../services/api.js";
 
 const [otp, setOtp] = createState("");
 
-export const OTPScreen = ({ action, onVerified }) => {
+export const OTPPage = ({ action, onVerified }) => {
   const appendDigit = (digit) => {
     if (otp().length < 5) setOtp(otp() + digit);
   };

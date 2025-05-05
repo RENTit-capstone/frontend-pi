@@ -1,6 +1,6 @@
 import Button from "../components/Button.js";
 
-export const FirstScreen = ({ onSelect }) => {
+export const SelectActionPage = ({ onSelect }) => {
   const actions = [
     { label: "물건 맡기기", value: "store" },
     { label: "물건 빌리기", value: "borrow" },

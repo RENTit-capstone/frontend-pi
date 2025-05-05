@@ -1,5 +1,5 @@
-import { FirstScreen } from "../pages/FirstScreen.js";
-import { OTPScreen } from "../pages/OTPScreen.js";
+import { SelectActionPage } from "../pages/SelectActionPage.js";
+import { OTPPage } from "../pages/OTPPage.js";
 import { ActionScreen } from "../pages/ActionScreen.js";
 import { createState } from "../core/core.js";
 
@@ -9,7 +9,7 @@ const [userSession, setUserSession] = createState(null);
 
 const renderPage = () => {
   if (currentPage() === "first") {
-    return FirstScreen({
+    return SelectActionPage({
       onSelect: (action) => {
         setSelectedAction(action);
         setCurrentPage("otp");
@@ -18,7 +18,7 @@ const renderPage = () => {
   }
 
   if (currentPage() === "otp") {
-    return OTPScreen({
+    return OTPPage({
       action: selectedAction(),
       onVerified: (data) => {
         setUserSession(data);
