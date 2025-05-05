@@ -3,24 +3,27 @@ import { OTPPage } from "../pages/OTPPage.js";
 import { SelectItemPage } from "../pages/SelectItemPage.js";
 import { SelectSlotPage } from "../pages/SelectSlotPage.js";
 import { DisplaySlotPage } from "../pages/DisplaySlotPage.js";
+import { WaitForLockerPage } from "../pages/WaitForLockerPage.js";
 import { WaitForClosePage } from "../pages/WaitForClosePage.js";
 import { FinalPage } from "../pages/FinalPage.js";
 
 import { createState } from "../core/core.js";
-import { performLockerAction, checkSlotClosed } from "../services/api.js";
+import { performLockerAction, pollSlotClosed } from "../services/api.js";
 
 const [currentPage, setCurrentPage] = createState("selectAction");
 const [selectedAction, setSelectedAction] = createState(null);
 const [userSession, setUserSession] = createState(null);
 const [selectedItem, setSelectedItem] = createState(null);
 const [selectedSlot, setSelectedSlot] = createState(null);
+const [pollingStarted, setPollingStarted] = createState(false);
 
 const resetStates = () => {
   setCurrentPage("selectAction");
-  setSelectedAction(null)
-  setUserSession(null)
-  setSelectedItem(null)
-  setSelectedSlot(null)
+  setSelectedAction(null);
+  setUserSession(null);
+  setSelectedItem(null);
+  setSelectedSlot(null);
+  setPollingStarted(false);
 }
 
 const renderPage = () => {
@@ -51,9 +54,9 @@ const renderPage = () => {
       setSelectedItem: setSelectedItem,
       onSelect: () => {
         if (selectedAction() == "store" || selectedAction() === "return") {
-          setCurrentPage("selectSlot")
+          setCurrentPage("selectSlot");
         } else {
-          setCurrentPage("displaySlot")
+          setCurrentPage("displaySlot");
         }
       },
     });
@@ -64,18 +67,9 @@ const renderPage = () => {
       availableSlots: userSession().available_slots,
       selectedSlot: selectedSlot,
       setSelectedSlot: setSelectedSlot,
-      onSelect: async () => {
-        const res = await performLockerAction({
-          action: selectedAction(),
-          item: selectedItem(),
-          slot: selectedSlot(),
-        });
-        if (res.success) {
-          setCurrentPage("waitForClose");
-        } else {
-          alert("사물함 동작에 실패했습니다. 다시 시도해주세요.")
-        }
-      },
+      onSelect: () => {
+        setCurrentPage("waitForLocker");
+      }
     });
   }
 
@@ -83,42 +77,36 @@ const renderPage = () => {
     return DisplaySlotPage({
       userName: userSession().user_name,
       selectedItem: selectedItem(),
-      onConfirm: async (slotNum) => {
-        const res = await performLockerAction({
-          action: selectedAction(),
-          item: selectedItem(),
-          slot: slotNum,
-        });
-        if (res.success) {
-          setCurrentPage("waitForClose");
-        } else {
-          alert("사물함 동작에 실패했습니다. 다시 시도해주세요.");
-        }
+      onConfirm: () => {
+        setCurrentPage("waitForLocker");
       },
     });
   }
 
-  let pollingStarted = false;
+  if (currentPage() === "waitForLocker") {
+    performLockerAction({
+      action: selectedAction(),
+      item: selectedItem(),
+      slot: selectedSlot(),
+    }).then(res => {
+      if (res.success) {
+        setCurrentPage("waitForClose");
+      } else {
+        alert("사물함 동작에 실패했습니다. 다시 시도해주세요.");
+        resetStates();
+      }
+    });
+
+    return WaitForLockerPage({
+      userName: userSession().user_name,
+    });
+  }
+
   if (currentPage() === "waitForClose") {
-    if (!pollingStarted) {
-      pollingStarted = true;
-      setTimeout(async () => {
-        let retries = 0;
-        const maxRetries = 10;
-        const interval = 1000;
-        let closed = false;
-
-        while (retries < maxRetries) {
-          const result = await checkSlotClosed();
-          console.log("[POLL] 닫힘 상태:", result.closed);
-          if (result.closed) {
-            closed = true;
-            break;
-          }
-          retries++;
-          await new Promise(res => setTimeout(res, interval));
-        }
-
+    if (!pollingStarted()) {
+      setPollingStarted(true);
+      
+      pollSlotClosed().then((closed) => {
         if (closed) {
           setCurrentPage("final");
         } else {
@@ -127,9 +115,15 @@ const renderPage = () => {
           }
           resetStates();
         }
-        pollingStarted = false;
-      }, 0);
+        setPollingStarted(false);
+      }).catch((err) => {
+        console.error("[POLL] 닫힘 확인 중 요류:", err);
+        alert("사물함 상태 확인 중 오류가 발생했습니다.");
+        resetStates();
+        setPollingStarted(false);
+      });
     }
+
     return WaitForClosePage({
       userName: userSession().user_name,
       slot: selectedSlot(),
