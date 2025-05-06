@@ -16,6 +16,7 @@ const [userSession, setUserSession] = createState(null);
 const [selectedItem, setSelectedItem] = createState(null);
 const [selectedSlot, setSelectedSlot] = createState(null);
 const [pollingStarted, setPollingStarted] = createState(false);
+const [otp, setOtp] = createState("");
 
 const resetStates = () => {
   setCurrentPage("selectAction");
@@ -24,6 +25,7 @@ const resetStates = () => {
   setSelectedItem(null);
   setSelectedSlot(null);
   setPollingStarted(false);
+  setOtp("");
   resetLockerState();
 }
 
@@ -44,6 +46,8 @@ const renderPage = () => {
         setUserSession(data);
         setCurrentPage("selectItem");
       },
+      otp: otp,
+      setOtp: setOtp,
     });
   }
 
