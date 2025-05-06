@@ -82,7 +82,8 @@ const renderPage = () => {
     return DisplaySlotPage({
       userName: userSession().user_name,
       selectedItem: selectedItem(),
-      onConfirm: () => {
+      onConfirm: (slot) => {
+        setSelectedSlot(slot);
         setCurrentPage("waitForLocker");
       },
     });
