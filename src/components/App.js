@@ -8,7 +8,7 @@ import { WaitForClosePage } from "../pages/WaitForClosePage.js";
 import { FinalPage } from "../pages/FinalPage.js";
 
 import { createState } from "../core/core.js";
-import { performLockerAction, pollSlotClosed } from "../services/api.js";
+import { performLockerAction, pollSlotClosed, resetLockerState } from "../services/api.js";
 
 const [currentPage, setCurrentPage] = createState("selectAction");
 const [selectedAction, setSelectedAction] = createState(null);
@@ -24,6 +24,7 @@ const resetStates = () => {
   setSelectedItem(null);
   setSelectedSlot(null);
   setPollingStarted(false);
+  resetLockerState();
 }
 
 const renderPage = () => {
@@ -131,7 +132,12 @@ const renderPage = () => {
   }
 
   if (currentPage() === "final") {
-    return FinalPage({ userName: userSession().user_name });
+    return FinalPage({
+      userName: userSession().user_name,
+      onTimeout: () => {
+        resetStates();
+      },
+    });
   }
 
   return {

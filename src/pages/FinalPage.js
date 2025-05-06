@@ -1,4 +1,5 @@
-export const FinalPage = ({ userName }) => {
+export const FinalPage = ({ userName, onTimeout }) => {
+  setTimeout(onTimeout, 10000);
   return {
     html: `
       <div class="screen-container">

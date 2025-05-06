@@ -91,3 +91,13 @@ export async function pollSlotClosed(interval = 1000, maxAttempts = 20) {
     check();
   });
 }
+
+export async function resetLockerState() {
+  try {
+    await apiFetch("/api/system/reset", {
+      method: "POST"
+    });
+  } catch (err) {
+    console.error("[API] resetLockerState failed:", err);
+  }
+}
