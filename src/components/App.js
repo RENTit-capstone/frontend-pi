@@ -58,7 +58,7 @@ const renderPage = () => {
       selectedItem: selectedItem,
       setSelectedItem: setSelectedItem,
       onSelect: () => {
-        if (selectedAction() == "store" || selectedAction() === "return") {
+        if (selectedAction() == "DROP_OFF_BY_OWNER" || selectedAction() === "RETURN_BY_RENTER") {
           setCurrentPage("selectSlot");
         } else {
           setCurrentPage("displaySlot");
