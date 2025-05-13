@@ -53,15 +53,11 @@ export async function submitOtp(otp, action) {
   }
 }
 
-export async function performLockerAction({ action, item, slot }) {
+export async function performLockerAction() {
   try {
     const response = await apiFetch("/api/locker/perform", {
       method: "POST",
-      body: {
-        action,
-        item,
-        slot
-      }
+      body: {}, // 내부 캐시를 참조하므로 인자 불필요
     });
     return response;
   } catch (err) {
@@ -72,7 +68,7 @@ export async function performLockerAction({ action, item, slot }) {
 
 export async function pollSlotClosed(interval = 1000, maxAttempts = 20) {
   return new Promise((resolve, reject) => {
-    let attemps = 0;
+    let attempts = 0;
 
     const check = async () => {
       try {
@@ -83,7 +79,7 @@ export async function pollSlotClosed(interval = 1000, maxAttempts = 20) {
           resolve(true);
           return;
         }
-        if (++attemps >= maxAttempts) {
+        if (++attempts >= maxAttempts) {
           resolve(false);
           return;
         }
@@ -106,4 +102,53 @@ export async function resetLockerState() {
   } catch (err) {
     console.error("[API] resetLockerState failed:", err);
   }
+}
+
+export async function getAvailableSlots(rentalId, action) {
+  try {
+    await apiFetch("/api/locker/empty", {
+      method: "POST",
+      body: {
+        rentalId,
+        action
+      },
+    });
+
+    return await pollAvailableSlotsResult();
+  } catch (err) {
+    console.error("[API] getAvailableSlots failed:", err);
+    return [];
+  }
+}
+
+export async function pollAvailableSlotsResult(interval = 1000, maxAttempts = 10) {
+  return new Promise((resolve, reject) => {
+    let attempts = 0;
+
+    const check = async () => {
+      try {
+        const res = await apiFetch("/api/locker/empty/result");
+        const { success, data } = res;
+
+        if (success && data && Array.isArray(data.lockers)) {
+          const available = data.lockers
+            .filter(l => l.available)
+            .map(l => l.lockerId);
+          resolve(available);
+          return;
+        }
+
+        if (++attempts >= maxAttempts) {
+          reject(new Error("빈 사물함 목록 조회 실패 또는 시간 초과"));
+          return;
+        }
+
+        setTimeout(check, interval);
+      } catch (err) {
+        reject(err);
+      }
+    };
+
+    check();
+  });
 }
