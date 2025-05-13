@@ -9,7 +9,13 @@ export async function pollOtpResult(interval = 1000, maxAttempts = 10) {
         const result = await apiFetch(`/api/verify/result`);
         console.log("[OTP] 인증 상태:", result);
 
-        if (result.verified !== null) {
+        if (result.verified === false && result.error) {
+          alert(`OTP 인증 실패: ${result.error}`);
+          reject(new Error(result.error));
+          return;
+        }
+
+        if (result.verified === true) {
           resolve(result);
           return;
         }
