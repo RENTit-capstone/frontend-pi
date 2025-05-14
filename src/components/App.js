@@ -8,7 +8,7 @@ import { WaitForClosePage } from "../pages/WaitForClosePage.js";
 import { FinalPage } from "../pages/FinalPage.js";
 
 import { createState } from "../core/core.js";
-import { performLockerAction, pollSlotClosed, resetLockerState } from "../services/api.js";
+import { getAvailableSlots, performLockerAction, pollSlotClosed, resetLockerState } from "../services/api.js";
 
 const [currentPage, setCurrentPage] = createState("selectAction");
 const [selectedAction, setSelectedAction] = createState(null);
@@ -17,6 +17,8 @@ const [selectedItem, setSelectedItem] = createState(null);
 const [selectedSlot, setSelectedSlot] = createState(null);
 const [pollingStarted, setPollingStarted] = createState(false);
 const [otp, setOtp] = createState("");
+const [availableSlots, setAvailableSlots] = createState([]);
+
 
 const resetStates = () => {
   setCurrentPage("selectAction");
@@ -57,9 +59,20 @@ const renderPage = () => {
       items: userSession().items,
       selectedItem: selectedItem,
       setSelectedItem: setSelectedItem,
-      onSelect: () => {
+      onSelect: async () => {
+        const item = selectedItem;
+        const rentalId = item.item_id;
+        const action = selectedAction();
+
         if (selectedAction() == "DROP_OFF_BY_OWNER" || selectedAction() === "RETURN_BY_RENTER") {
-          setCurrentPage("selectSlot");
+          try {
+            const slots = await getAvailableSlots(rentalId, action);
+            setAvailableSlots(slots);
+            setCurrentPage("selectSlot");
+          } catch (e) {
+            alert("빈 사물함 목록을 불러오지 못했습니다.");
+            resetStates();
+          }
         } else {
           setCurrentPage("displaySlot");
         }
@@ -69,7 +82,7 @@ const renderPage = () => {
 
   if (currentPage() === "selectSlot") {
     return SelectSlotPage({
-      availableSlots: userSession().available_slots,
+      availableSlots: availableSlots,
       selectedSlot: selectedSlot,
       setSelectedSlot: setSelectedSlot,
       onSelect: () => {
@@ -90,11 +103,7 @@ const renderPage = () => {
   }
 
   if (currentPage() === "waitForLocker") {
-    performLockerAction({
-      action: selectedAction(),
-      item: selectedItem(),
-      slot: selectedSlot(),
-    }).then(res => {
+    performLockerAction().then(res => {
       if (res.success) {
         setCurrentPage("waitForClose");
       } else {
