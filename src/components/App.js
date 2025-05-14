@@ -64,7 +64,7 @@ const renderPage = () => {
         const rentalId = item.item_id;
         const action = selectedAction();
 
-        if (selectedAction() == "DROP_OFF_BY_OWNER" || selectedAction() === "RETURN_BY_RENTER") {
+        if (["DROP_OFF_BY_OWNER", "RETURN_BY_RENTER"].includes(action)) {
           try {
             const slots = await getAvailableSlots(rentalId, action);
             setAvailableSlots(slots);
@@ -75,6 +75,15 @@ const renderPage = () => {
             resetStates();
           }
         } else {
+          const lockerId = item.slot;
+          console.log("[DEBUG] Current locker id:", lockerId)
+          if (!lockerId) {
+            alert("해당 물건은 현재 사물함에 없습니다.\n다른 키오스크에서 찾거나, 물건 대여자에게 문의하세요.");
+            resetStates();
+            return;
+          }
+
+          setSelectedSlot(lockerId);
           setCurrentPage("displaySlot");
         }
       },
