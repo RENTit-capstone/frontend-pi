@@ -53,11 +53,15 @@ export async function submitOtp(otp, action) {
   }
 }
 
-export async function performLockerAction() {
+export async function performLockerAction({ rentalId, lockerId, action }) {
   try {
     const response = await apiFetch("/api/locker/perform", {
       method: "POST",
-      body: {}, // 내부 캐시를 참조하므로 인자 불필요
+      body: {
+        rentalId,
+        lockerId,
+        action
+      },
     });
     return response;
   } catch (err) {

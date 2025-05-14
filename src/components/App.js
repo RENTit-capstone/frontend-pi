@@ -60,7 +60,7 @@ const renderPage = () => {
       selectedItem: selectedItem,
       setSelectedItem: setSelectedItem,
       onSelect: async () => {
-        const item = selectedItem;
+        const item = selectedItem();
         const rentalId = item.item_id;
         const action = selectedAction();
 
@@ -71,6 +71,7 @@ const renderPage = () => {
             setCurrentPage("selectSlot");
           } catch (e) {
             alert("빈 사물함 목록을 불러오지 못했습니다.");
+            console.log(`Error Occured: ${e}`);
             resetStates();
           }
         } else {
@@ -82,7 +83,7 @@ const renderPage = () => {
 
   if (currentPage() === "selectSlot") {
     return SelectSlotPage({
-      availableSlots: availableSlots,
+      availableSlots: availableSlots(),
       selectedSlot: selectedSlot,
       setSelectedSlot: setSelectedSlot,
       onSelect: () => {
@@ -103,7 +104,11 @@ const renderPage = () => {
   }
 
   if (currentPage() === "waitForLocker") {
-    performLockerAction().then(res => {
+    const rentalId = selectedItem()?.item_id;
+    const lockerId = selectedSlot();
+    const action = selectedAction();
+
+    performLockerAction({ rentalId, lockerId, action}).then(res => {
       if (res.success) {
         setCurrentPage("waitForClose");
       } else {
