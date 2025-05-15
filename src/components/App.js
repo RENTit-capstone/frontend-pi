@@ -18,7 +18,7 @@ const [selectedSlot, setSelectedSlot] = createState(null);
 const [pollingStarted, setPollingStarted] = createState(false);
 const [otp, setOtp] = createState("");
 const [availableSlots, setAvailableSlots] = createState([]);
-
+const [selectedFee, setSelectedFee] = createState(0);
 
 const resetStates = () => {
   setCurrentPage("selectAction");
@@ -96,6 +96,13 @@ const renderPage = () => {
       selectedSlot: selectedSlot,
       setSelectedSlot: setSelectedSlot,
       onSelect: () => {
+        const locker = availableSlots().find(l => l.lockerId === selectedSlot());
+        if (!locker || !locker.payable) {
+          alert("해당 사물함은 현재 사용할 수 없습니다.");
+          return;
+        }
+
+        setSelectedFee(locker.fee);
         setCurrentPage("waitForLocker");
       }
     });
@@ -117,7 +124,12 @@ const renderPage = () => {
     const lockerId = selectedSlot();
     const action = selectedAction();
 
-    performLockerAction({ rentalId, lockerId, action}).then(res => {
+    performLockerAction({
+      rentalId,
+      lockerId,
+      action,
+      fee: selectedFee()
+    }).then(res => {
       if (res.success) {
         setCurrentPage("waitForClose");
       } else {

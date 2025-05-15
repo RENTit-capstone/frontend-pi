@@ -53,14 +53,15 @@ export async function submitOtp(otp, action) {
   }
 }
 
-export async function performLockerAction({ rentalId, lockerId, action }) {
+export async function performLockerAction({ rentalId, lockerId, action, fee }) {
   try {
     const response = await apiFetch("/api/locker/perform", {
       method: "POST",
       body: {
         rentalId,
         lockerId,
-        action
+        action,
+        fee
       },
     });
     return response;
