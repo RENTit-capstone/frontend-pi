@@ -64,6 +64,14 @@ const renderPage = () => {
         const rentalId = item.item_id;
         const action = selectedAction();
 
+        if (!item.payable) {
+          alert("현재 잔액이 부족하여 이 물건을 사용할 수 없습니다.");
+          resetStates();
+          return;
+        }
+
+        setSelectedFee(item.fee);
+
         if (["DROP_OFF_BY_OWNER", "RETURN_BY_RENTER"].includes(action)) {
           try {
             const slots = await getAvailableSlots(rentalId, action);
@@ -76,7 +84,7 @@ const renderPage = () => {
           }
         } else {
           const lockerId = item.slot;
-          console.log("[DEBUG] Current locker id:", lockerId)
+          console.log("[DEBUG] Current locker id:", lockerId);
           if (!lockerId) {
             alert("해당 물건은 현재 사물함에 없습니다.\n다른 키오스크에서 찾거나, 물건 대여자에게 문의하세요.");
             resetStates();
@@ -97,12 +105,6 @@ const renderPage = () => {
       setSelectedSlot: setSelectedSlot,
       onSelect: () => {
         const locker = availableSlots().find(l => l.lockerId === selectedSlot());
-        if (!locker || !locker.payable) {
-          alert("해당 사물함은 현재 사용할 수 없습니다.");
-          return;
-        }
-
-        setSelectedFee(locker.fee);
         setCurrentPage("waitForLocker");
       }
     });
