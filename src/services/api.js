@@ -138,7 +138,6 @@ export async function pollAvailableSlotsResult(interval = 1000, maxAttempts = 10
         if (success && data && Array.isArray(data.lockers)) {
           const available = data.lockers
             .filter(l => l.available)
-            .map(l => l.lockerId);
           resolve(available);
           return;
         }
