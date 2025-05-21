@@ -136,8 +136,8 @@ export async function pollAvailableSlotsResult(interval = 1000, maxAttempts = 10
         const { success, data } = res;
 
         if (success && data && Array.isArray(data.lockers)) {
-          const available = data.lockers
-            .filter(l => l.available)
+          console.log("[API] empty slots data loaded: ", data);
+          const available = data.lockers;
           resolve(available);
           return;
         }

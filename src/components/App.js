@@ -75,6 +75,7 @@ const renderPage = () => {
         if (["DROP_OFF_BY_OWNER", "RETURN_BY_RENTER"].includes(action)) {
           try {
             const slots = await getAvailableSlots(rentalId, action);
+            console.log("[DEBUG] API results:", slots);
             setAvailableSlots(slots);
             setCurrentPage("selectSlot");
           } catch (e) {

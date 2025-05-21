@@ -2,7 +2,8 @@ import Button from "../components/Button.js"
 
 export const SelectSlotPage = ({ availableSlots, selectedSlot, setSelectedSlot, onSelect }) => {
   const slotButtons = availableSlots.map((slotObj) => {
-    const lockerId = slotObj.lockerId;
+    const locker = slotObj.locker
+    const lockerId = locker.lockerId;
 
     const { html, handlers } = Button({
       id: `slot-${lockerId}`,
