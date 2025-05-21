@@ -67,7 +67,9 @@ const renderPage = () => {
       setSelectedItem: setSelectedItem,
       onSelect: async () => {
         const item = selectedItem();
-        const rentalId = item.item_id;
+        console.log("[DEBUG] ", item);
+        // TODO: FIX BELOW
+        const rentalId = selectedItem().rental_id;
         const action = selectedAction();
 
         if (!item.payable) {
@@ -130,7 +132,7 @@ const renderPage = () => {
   }
 
   if (currentPage() === "waitForLocker") {
-    const rentalId = selectedItem()?.item_id;
+    const rentalId = selectedItem().rental_id;
     const lockerId = selectedSlot();
     const action = selectedAction();
 
