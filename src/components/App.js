@@ -6,6 +6,7 @@ import { DisplaySlotPage } from "../pages/DisplaySlotPage.js";
 import { WaitForLockerPage } from "../pages/WaitForLockerPage.js";
 import { WaitForClosePage } from "../pages/WaitForClosePage.js";
 import { FinalPage } from "../pages/FinalPage.js";
+import NavBar from "./NavBar.js";
 
 import { createState } from "../core/core.js";
 import { getAvailableSlots, performLockerAction, pollSlotClosed, resetLockerState } from "../services/api.js";
@@ -19,6 +20,7 @@ const [pollingStarted, setPollingStarted] = createState(false);
 const [otp, setOtp] = createState("");
 const [availableSlots, setAvailableSlots] = createState([]);
 const [selectedFee, setSelectedFee] = createState(0);
+const [firstState, setFirstState] = createState(true);
 
 const resetStates = () => {
   setCurrentPage("selectAction");
@@ -33,6 +35,10 @@ const resetStates = () => {
 
 const renderPage = () => {
   if (currentPage() === "selectAction") {
+    if (firstState()) {
+      resetStates();
+      setFirstState(false);
+    }
     return SelectActionPage({
       onSelect: (action) => {
         setSelectedAction(action);
@@ -192,9 +198,16 @@ const renderPage = () => {
 
 export default function App() {
   const page = renderPage();
+  const nav = NavBar({ onReset: () => resetStates() });
 
   return {
-    html: `<div>${page.html}</div>`,
-    handlers: { ...page.handlers },
+    html: `
+      ${nav.html}
+      <div>${page.html}</div>
+    `,
+    handlers: {
+      ...nav.handlers,
+      ...page.handlers
+    },
   };
 }
