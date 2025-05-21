@@ -23,6 +23,7 @@ const [selectedFee, setSelectedFee] = createState(0);
 const [firstState, setFirstState] = createState(true);
 
 const resetStates = () => {
+  console.log("[DEBUG] reset states");
   setCurrentPage("selectAction");
   setSelectedAction(null);
   setUserSession(null);
@@ -67,8 +68,6 @@ const renderPage = () => {
       setSelectedItem: setSelectedItem,
       onSelect: async () => {
         const item = selectedItem();
-        console.log("[DEBUG] ", item);
-        // TODO: FIX BELOW
         const rentalId = selectedItem().rental_id;
         const action = selectedAction();
 
@@ -198,16 +197,12 @@ const renderPage = () => {
   };
 };
 
-const nonResettablePages = ["waitForLocker", "waitForClose"];
-
 export default function App() {
   const page = renderPage();
 
-  const isResetAllowed = !nonResettablePages.includes(currentPage());
-
   const nav = NavBar({
     onReset: () => resetStates(),
-    canReset: isResetAllowed,
+    currentPage: currentPage,
   });
 
   return {
