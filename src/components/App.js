@@ -19,6 +19,7 @@ const [pollingStarted, setPollingStarted] = createState(false);
 const [otp, setOtp] = createState("");
 const [availableSlots, setAvailableSlots] = createState([]);
 const [selectedFee, setSelectedFee] = createState(0);
+const [firstState, setFirstState] = createState(true);
 
 const resetStates = () => {
   setCurrentPage("selectAction");
@@ -33,8 +34,11 @@ const resetStates = () => {
 
 const renderPage = () => {
   if (currentPage() === "selectAction") {
-    resetStates();
-    resetLockerState();
+    if (firstState()) {
+      resetStates();
+      resetLockerState();
+      setFirstState(false);
+    }
     return SelectActionPage({
       onSelect: (action) => {
         setSelectedAction(action);
