@@ -8,7 +8,7 @@ import { WaitForClosePage } from "../pages/WaitForClosePage.js";
 import { FinalPage } from "../pages/FinalPage.js";
 
 import { createState } from "../core/core.js";
-import { performLockerAction, pollSlotClosed } from "../services/api.js";
+import { getAvailableSlots, performLockerAction, pollSlotClosed, resetLockerState } from "../services/api.js";
 
 const [currentPage, setCurrentPage] = createState("selectAction");
 const [selectedAction, setSelectedAction] = createState(null);
@@ -16,6 +16,9 @@ const [userSession, setUserSession] = createState(null);
 const [selectedItem, setSelectedItem] = createState(null);
 const [selectedSlot, setSelectedSlot] = createState(null);
 const [pollingStarted, setPollingStarted] = createState(false);
+const [otp, setOtp] = createState("");
+const [availableSlots, setAvailableSlots] = createState([]);
+const [selectedFee, setSelectedFee] = createState(0);
 
 const resetStates = () => {
   setCurrentPage("selectAction");
@@ -24,6 +27,8 @@ const resetStates = () => {
   setSelectedItem(null);
   setSelectedSlot(null);
   setPollingStarted(false);
+  setOtp("");
+  resetLockerState();
 }
 
 const renderPage = () => {
@@ -43,6 +48,8 @@ const renderPage = () => {
         setUserSession(data);
         setCurrentPage("selectItem");
       },
+      otp: otp,
+      setOtp: setOtp,
     });
   }
 
@@ -52,10 +59,40 @@ const renderPage = () => {
       items: userSession().items,
       selectedItem: selectedItem,
       setSelectedItem: setSelectedItem,
-      onSelect: () => {
-        if (selectedAction() == "store" || selectedAction() === "return") {
-          setCurrentPage("selectSlot");
+      onSelect: async () => {
+        const item = selectedItem();
+        const rentalId = item.item_id;
+        const action = selectedAction();
+
+        if (!item.payable) {
+          alert("현재 잔액이 부족하여 이 물건을 사용할 수 없습니다.");
+          resetStates();
+          return;
+        }
+
+        setSelectedFee(item.fee);
+
+        if (["DROP_OFF_BY_OWNER", "RETURN_BY_RENTER"].includes(action)) {
+          try {
+            const slots = await getAvailableSlots(rentalId, action);
+            console.log("[DEBUG] API results:", slots);
+            setAvailableSlots(slots);
+            setCurrentPage("selectSlot");
+          } catch (e) {
+            alert("빈 사물함 목록을 불러오지 못했습니다.");
+            console.log(`Error Occured: ${e}`);
+            resetStates();
+          }
         } else {
+          const lockerId = item.slot;
+          console.log("[DEBUG] Current locker id:", lockerId);
+          if (!lockerId) {
+            alert("해당 물건은 현재 사물함에 없습니다.\n다른 키오스크에서 찾거나, 물건 대여자에게 문의하세요.");
+            resetStates();
+            return;
+          }
+
+          setSelectedSlot(lockerId);
           setCurrentPage("displaySlot");
         }
       },
@@ -64,10 +101,12 @@ const renderPage = () => {
 
   if (currentPage() === "selectSlot") {
     return SelectSlotPage({
-      availableSlots: userSession().available_slots,
+      availableSlots: availableSlots(),
       selectedSlot: selectedSlot,
       setSelectedSlot: setSelectedSlot,
       onSelect: () => {
+        // where to use down below?
+        //const locker = availableSlots().find(l => l.lockerId === selectedSlot());
         setCurrentPage("waitForLocker");
       }
     });
@@ -77,17 +116,23 @@ const renderPage = () => {
     return DisplaySlotPage({
       userName: userSession().user_name,
       selectedItem: selectedItem(),
-      onConfirm: () => {
+      onConfirm: (slot) => {
+        setSelectedSlot(slot);
         setCurrentPage("waitForLocker");
       },
     });
   }
 
   if (currentPage() === "waitForLocker") {
+    const rentalId = selectedItem()?.item_id;
+    const lockerId = selectedSlot();
+    const action = selectedAction();
+
     performLockerAction({
-      action: selectedAction(),
-      item: selectedItem(),
-      slot: selectedSlot(),
+      rentalId,
+      lockerId,
+      action,
+      fee: selectedFee()
     }).then(res => {
       if (res.success) {
         setCurrentPage("waitForClose");
@@ -131,7 +176,12 @@ const renderPage = () => {
   }
 
   if (currentPage() === "final") {
-    return FinalPage({ userName: userSession().user_name });
+    return FinalPage({
+      userName: userSession().user_name,
+      onTimeout: () => {
+        resetStates();
+      },
+    });
   }
 
   return {

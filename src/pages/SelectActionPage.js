@@ -2,10 +2,10 @@ import Button from "../components/Button.js";
 
 export const SelectActionPage = ({ onSelect }) => {
   const actions = [
-    { label: "물건 맡기기", value: "store" },
-    { label: "물건 빌리기", value: "borrow" },
-    { label: "물건 반납하기", value: "return" },
-    { label: "물건 되찾기", value: "retrieve" },
+    { label: "물건 맡기기", value: "DROP_OFF_BY_OWNER" },
+    { label: "물건 빌리기", value: "PICK_UP_BY_RENTER" },
+    { label: "물건 반납하기", value: "RETURN_BY_RENTER" },
+    { label: "물건 되찾기", value: "RETRIEVE_BY_OWNER" },
   ];
 
   const buttons = actions.map(({ label, value }) => {

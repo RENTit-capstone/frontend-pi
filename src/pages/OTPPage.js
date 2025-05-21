@@ -1,10 +1,7 @@
-import { createState } from "../core/core.js";
 import Button from "../components/Button.js";
 import { submitOtp } from "../services/api.js";
 
-const [otp, setOtp] = createState("");
-
-export const OTPPage = ({ action, onVerified }) => {
+export const OTPPage = ({ action, onVerified, otp, setOtp }) => {
   const appendDigit = (digit) => {
     if (otp().length < 5) setOtp(otp() + digit);
   };

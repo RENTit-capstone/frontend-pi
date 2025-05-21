@@ -1,11 +1,14 @@
 import Button from "../components/Button.js"
 
 export const SelectSlotPage = ({ availableSlots, selectedSlot, setSelectedSlot, onSelect }) => {
-  const slotButtons = availableSlots.map((slot) => {
+  const slotButtons = availableSlots.map((slotObj) => {
+    const locker = slotObj.locker
+    const lockerId = locker.lockerId;
+
     const { html, handlers } = Button({
-      id: `slot-${slot}`,
-      label: `${slot}번 칸`,
-      onClick: () => setSelectedSlot(slot),
+      id: `slot-${lockerId}`,
+      label: `${lockerId}번 칸`,
+      onClick: () => setSelectedSlot(lockerId),
     });
     return { html, handlers };
   });
