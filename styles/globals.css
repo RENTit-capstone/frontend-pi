@@ -33,6 +33,13 @@ body {
   transition: background-color 0.2s ease;
 }
 
+.disabled-slot {
+  background-color: #f0f0f0;
+  color: #aaa;
+  border: 1px dashed #ccc;
+  cursor: not-allowed;
+}
+
 .common-button:hover {
   background-color: #d0d0d0;
 }
@@ -42,17 +49,34 @@ body {
   top: 0;
   width: 100%;
   background-color: #ddd;
-  padding: 8px;
-  text-align: right;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   z-index: 1000;
+  font-size: 0.95rem;
+}
+
+.nav-left {
+  color: #555;
+  font-weight: bold;
+}
+
+.nav-right {
+  text-align: right;
 }
 
 .nav-button {
   padding: 6px 12px;
-  margin-right: 16px;
   font-size: 0.9rem;
   border: none;
   background-color: #ccc;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.nav-button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
 }

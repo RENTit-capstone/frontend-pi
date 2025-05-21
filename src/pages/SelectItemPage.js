@@ -2,12 +2,29 @@ import Button from "../components/Button.js";
 
 export const SelectItemPage = ({ userName, items, selectedItem, setSelectedItem, onSelect }) => {
   const itemButtons = items.map((item) => {
+    const id = `item-${item.item_id}`;
+    const label = `${item.name} (요금: ${item.fee.toLocaleString()} / 잔액: ${item.balance.toLocaleString()})`;
+
     const { html, handlers } = Button({
-      id: `item-${item.item_id}`,
-      label: item.name,
-      onClick: () => setSelectedItem(item),
+      id,
+      label,
+      onClick: () => {
+        if (!item.payable) {
+          alert("해당 물건은 잔액이 부족하여 선택할 수 없습니다.");
+          return;
+        }
+        setSelectedItem(item);
+      },
     });
-    return { html, handlers };
+
+    const buttonHtml = !item.payable
+      ? html.replace(`<button`, `<button disabled class="disabled-slot"`)
+      : html;
+    
+    return {
+      html: buttonHtml,
+      handlers: item.payable ? handlers : {},
+    };
   });
 
   const { html: nextHtml, handlers: nextHandlers } = Button({
@@ -16,6 +33,8 @@ export const SelectItemPage = ({ userName, items, selectedItem, setSelectedItem,
     onClick: () => {
       if (selectedItem()) {
         onSelect();
+      } else {
+        alert("선택된 아이템이 없습니다.");
       }
     },
   });

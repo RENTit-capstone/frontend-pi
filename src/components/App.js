@@ -23,6 +23,7 @@ const [selectedFee, setSelectedFee] = createState(0);
 const [firstState, setFirstState] = createState(true);
 
 const resetStates = () => {
+  console.log("[DEBUG] reset states");
   setCurrentPage("selectAction");
   setSelectedAction(null);
   setUserSession(null);
@@ -67,7 +68,7 @@ const renderPage = () => {
       setSelectedItem: setSelectedItem,
       onSelect: async () => {
         const item = selectedItem();
-        const rentalId = item.item_id;
+        const rentalId = selectedItem().rental_id;
         const action = selectedAction();
 
         if (!item.payable) {
@@ -130,7 +131,7 @@ const renderPage = () => {
   }
 
   if (currentPage() === "waitForLocker") {
-    const rentalId = selectedItem()?.item_id;
+    const rentalId = selectedItem().rental_id;
     const lockerId = selectedSlot();
     const action = selectedAction();
 
@@ -198,7 +199,11 @@ const renderPage = () => {
 
 export default function App() {
   const page = renderPage();
-  const nav = NavBar({ onReset: () => resetStates() });
+
+  const nav = NavBar({
+    onReset: () => resetStates(),
+    currentPage: currentPage,
+  });
 
   return {
     html: `

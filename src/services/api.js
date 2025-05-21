@@ -112,6 +112,7 @@ export async function resetLockerState() {
 }
 
 export async function getAvailableSlots(rentalId, action) {
+  console.log("[DEBUG] in api rentalId:", rentalId);
   try {
     await apiFetch("/api/locker/empty", {
       method: "POST",
