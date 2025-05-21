@@ -33,6 +33,8 @@ const resetStates = () => {
 
 const renderPage = () => {
   if (currentPage() === "selectAction") {
+    resetStates();
+    resetLockerState();
     return SelectActionPage({
       onSelect: (action) => {
         setSelectedAction(action);
