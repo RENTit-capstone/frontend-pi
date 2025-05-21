@@ -33,6 +33,13 @@ body {
   transition: background-color 0.2s ease;
 }
 
+.disabled-slot {
+  background-color: #f0f0f0;
+  color: #aaa;
+  border: 1px dashed #ccc;
+  cursor: not-allowed;
+}
+
 .common-button:hover {
   background-color: #d0d0d0;
 }
