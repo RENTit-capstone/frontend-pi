@@ -55,10 +55,11 @@ export async function submitOtp(otp, action) {
 
 export async function performLockerAction({ rentalId, lockerId, action, fee }) {
   try {
+    let rentid = String(rentalId)
     const response = await apiFetch("/api/locker/perform", {
       method: "POST",
       body: {
-        rentalId,
+        rentalId: rentid,
         lockerId,
         action,
         fee

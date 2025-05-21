@@ -105,7 +105,8 @@ const renderPage = () => {
       selectedSlot: selectedSlot,
       setSelectedSlot: setSelectedSlot,
       onSelect: () => {
-        const locker = availableSlots().find(l => l.lockerId === selectedSlot());
+        // where to use down below?
+        //const locker = availableSlots().find(l => l.lockerId === selectedSlot());
         setCurrentPage("waitForLocker");
       }
     });
