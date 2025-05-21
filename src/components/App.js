@@ -198,9 +198,17 @@ const renderPage = () => {
   };
 };
 
+const nonResettablePages = ["waitForLocker", "waitForClose"];
+
 export default function App() {
   const page = renderPage();
-  const nav = NavBar({ onReset: () => resetStates() });
+
+  const isResetAllowed = !nonResettablePages.includes(currentPage());
+
+  const nav = NavBar({
+    onReset: () => resetStates(),
+    canReset: isResetAllowed,
+  });
 
   return {
     html: `
