@@ -62,7 +62,7 @@ const renderPage = () => {
 
   if (currentPage() === "selectItem") {
     return SelectItemPage({
-      userName: userSession().user_name,
+      userName: userSession().nickname,
       items: userSession().items,
       selectedItem: selectedItem,
       setSelectedItem: setSelectedItem,
@@ -121,7 +121,7 @@ const renderPage = () => {
 
   if (currentPage() === "displaySlot") {
     return DisplaySlotPage({
-      userName: userSession().user_name,
+      userName: userSession().nickname,
       selectedItem: selectedItem(),
       onConfirm: (slot) => {
         setSelectedSlot(slot);
@@ -150,7 +150,7 @@ const renderPage = () => {
     });
 
     return WaitForLockerPage({
-      userName: userSession().user_name,
+      userName: userSession().nickname,
     });
   }
 
@@ -177,14 +177,14 @@ const renderPage = () => {
     }
 
     return WaitForClosePage({
-      userName: userSession().user_name,
+      userName: userSession().nickname,
       slot: selectedSlot(),
     });
   }
 
   if (currentPage() === "final") {
     return FinalPage({ //userName, onTimeout, onManualReset
-      userName: userSession().user_name,
+      userName: userSession().nickname,
       onReset: () => {
         resetStates();
       }
