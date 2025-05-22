@@ -5,6 +5,12 @@ export const SelectItemPage = ({ userName, items, selectedItem, setSelectedItem,
     const id = `item-${item.item_id}`;
     const label = `${item.name} (요금: ${item.fee.toLocaleString()} / 잔액: ${item.balance.toLocaleString()})`;
 
+    const isSelected = selectedItem()?.item_id === item.item_id;
+
+    const buttonClass = item.payable
+      ? `select-item-button${isSelected ? " selected" : ""}`
+      : `select-item-button disabled`;
+
     const { html, handlers } = Button({
       id,
       label,
@@ -15,19 +21,11 @@ export const SelectItemPage = ({ userName, items, selectedItem, setSelectedItem,
         }
         setSelectedItem(item);
       },
+      className: buttonClass,
     });
-
-    const isSelected = selectedItem()?.item_id === item.item_id;
-
-    const buttonHtml = !item.payable
-      ? html.replace(`<button`, `<button disabled class="select-item-button disabled"`)
-      : html.replace(
-        `<button`,
-        `<button class="select-item-button${isSelected ? " selected": ""}"`
-      );
     
     return {
-      html: buttonHtml,
+      html: html,
       handlers: item.payable ? handlers : {},
     };
   });
@@ -42,6 +40,7 @@ export const SelectItemPage = ({ userName, items, selectedItem, setSelectedItem,
         alert("선택된 아이템이 없습니다.");
       }
     },
+      className: "select-item-next-button"
   });
 
   return {
@@ -49,7 +48,7 @@ export const SelectItemPage = ({ userName, items, selectedItem, setSelectedItem,
       <div class="screen-container">
         <h2 class="select-item-title">${userName}님, 물건을 선택하세요</h2>
         ${itemButtons.map(b => b.html).join("")}
-        <div class="item-next-wrapper">${nextHtml}</div>
+        <div class="select-item-next-wrapper">${nextHtml}</div>
       </div>
     `,
     handlers: Object.assign({}, ...itemButtons.map(b => b.handlers), nextHandlers),
