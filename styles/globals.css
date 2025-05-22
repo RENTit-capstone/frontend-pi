@@ -4,12 +4,20 @@
   --main-gap: 10px;
   --main-padding: 16px 32px;
   --button-width: 60%;
+
+  --color-primary: #455464;
+  --color-secondary: #F6EDE0;
+  --color-background: #FBF5ED;
+  --color-option: #D4D4D8;
+  --color-text: #505050;
+  --color-disabled-text: #888;
 }
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 .screen-container {
@@ -26,29 +34,29 @@ body {
   margin: var(--main-gap);
   width: var(--button-width);
   border-radius: var(--main-border-radius);
-  color: black;
-  background-color: #e0e0e0;
+  color: white;
+  background-color: var(--color-primary);
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
-.disabled-slot {
-  background-color: #f0f0f0;
-  color: #aaa;
-  border: 1px dashed #ccc;
-  cursor: not-allowed;
+.common-button:hover {
+  background-color: #5a667a;
 }
 
-.common-button:hover {
-  background-color: #d0d0d0;
+.disabled-slot {
+  background-color: var(--color-option);
+  color: var(--color-disabled-text);
+  border: 1px dashed #bbb;
+  cursor: not-allowed;
 }
 
 .nav-bar {
   position : absolute;
   top: 0;
   width: 100%;
-  background-color: #ddd;
+  background-color: var(--color-option);
   padding: 8px 16px;
   display: flex;
   justify-content: space-between;
@@ -58,7 +66,7 @@ body {
 }
 
 .nav-left {
-  color: #555;
+  color: var(--color-text);
   font-weight: bold;
 }
 
@@ -70,13 +78,15 @@ body {
   padding: 6px 12px;
   font-size: 0.9rem;
   border: none;
-  background-color: #ccc;
+  background-color: var(--color-primary);
+  color: white;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .nav-button:disabled {
-  background-color: #999;
+  background-color: var(--color-option);
+  color: var(--color-disabled-text);
   cursor: not-allowed;
   opacity: 0.6;
 }

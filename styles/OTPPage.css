@@ -4,6 +4,10 @@
   height: 100vh;
   box-sizing: border-box;
   padding: 30px;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .otp-left {
@@ -18,6 +22,7 @@
 .otp-title {
   font-size: 1.8rem;
   margin-bottom: 20px;
+  color: var(--color-primary);
 }
 
 .otp-display {
@@ -32,9 +37,10 @@
   font-size: 2rem;
   text-align: center;
   line-height: 40px;
-  border: 1px solid #ccc;
+  border: 2px solid var(--color-option);
   background-color: white;
   border-radius: var(--main-border-radius);
+  color: var(--color-text);
 }
 
 .otp-submit-button-wrapper {
@@ -48,14 +54,32 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;  /* ✅ 키패드 하단 고정 */
+  justify-content: center;
   align-items: center;
-  padding-bottom: 30px;
+  padding-left: 20px;
 }
 
 .otp-pad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--main-gap);
-  width: 200px;
+  gap: 16px;
+  width: 240px;
+  padding: 10px;
+}
+
+.otp-keypad-button {
+  background-color: var(--color-option);
+  border: none;
+  border-radius: 10px;
+  width: 90px;
+  height: 60px;
+  font-size: 1.4rem;
+  color: var(--color-text);
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+
+.otp-keypad-button:hover {
+  background-color: #c6c6ca;
 }

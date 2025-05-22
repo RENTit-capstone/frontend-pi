@@ -183,11 +183,11 @@ const renderPage = () => {
   }
 
   if (currentPage() === "final") {
-    return FinalPage({
+    return FinalPage({ //userName, onTimeout, onManualReset
       userName: userSession().user_name,
-      onTimeout: () => {
+      onReset: () => {
         resetStates();
-      },
+      }
     });
   }
 

@@ -1,6 +1,6 @@
-export default function Button({ id, label, onClick }) {
+export default function Button({ id, label, onClick, className = "common-button" }) {
   const html = `
-    <button id="${id}" class="common-button">
+    <button id="${id}" class="${className}">
       ${label}
     </button>
   `;

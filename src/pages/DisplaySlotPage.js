@@ -10,14 +10,15 @@ export const DisplaySlotPage = ({ userName, selectedItem, onConfirm }) => {
     id: "confirm-retrieve",
     label: "확인",
     onClick: () => onConfirm(String(slot)),
+    className: "display-slot-button"
   });
 
   return {
     html: `
-      <div class="screen-container">
-        <h2>${userName}님, 물건의 위치를 확인하세요:</h2>
-        <p>${slotInfo}</p>
-        <div class="action-button-wrapper">${confirmButtonHtml}</div>
+      <div class="display-slot-container">
+        <h2 class="display-slot-title">${userName}님, 물건의 위치를 확인하세요:</h2>
+        <p class="display-slot-message">${slotInfo}</p>
+        <div class="display-slot-button-wrapper">${confirmButtonHtml}</div>
       </div>
     `,
     handlers: confirmButtonHandlers,
