@@ -1,22 +1,19 @@
-import Button from "../components/Button.js"
+import Button from "../components/Button.js";
 
 export const SelectSlotPage = ({ availableSlots, selectedSlot, setSelectedSlot, onSelect }) => {
   const slotButtons = availableSlots.map((slotObj) => {
-    const locker = slotObj.locker
+    const locker = slotObj.locker;
     const lockerId = locker.lockerId;
+    const isSelected = selectedSlot() === lockerId;
 
     const { html, handlers } = Button({
       id: `slot-${lockerId}`,
       label: `${lockerId}번 칸`,
       onClick: () => setSelectedSlot(lockerId),
+      className: `select-slot-button${isSelected ? " selected" : ""}`
     });
 
-    const isSelected = selectedSlot() === lockerId;
-    const fianlHtml = html.replace(
-      `<button`,
-      `<button class="select-slot-button${isSelected ? " selected" : ""}"`
-    );
-    return { html: fianlHtml, handlers };
+    return { html, handlers };
   });
 
   const { html: confirmButtonHtml, handlers: confirmButtonHandlers } = Button({
@@ -27,6 +24,7 @@ export const SelectSlotPage = ({ availableSlots, selectedSlot, setSelectedSlot, 
         onSelect();
       }
     },
+    className: "select-slot-confirm-button"
   });
 
   return {
