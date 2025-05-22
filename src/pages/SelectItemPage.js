@@ -17,9 +17,14 @@ export const SelectItemPage = ({ userName, items, selectedItem, setSelectedItem,
       },
     });
 
+    const isSelected = selectedItem()?.item_id === item.item_id;
+
     const buttonHtml = !item.payable
-      ? html.replace(`<button`, `<button disabled class="disabled-slot"`)
-      : html;
+      ? html.replace(`<button`, `<button disabled class="select-item-button disabled"`)
+      : html.replace(
+        `<button`,
+        `<button class="select-item-button${isSelected ? " selected": ""}"`
+      );
     
     return {
       html: buttonHtml,
@@ -42,9 +47,9 @@ export const SelectItemPage = ({ userName, items, selectedItem, setSelectedItem,
   return {
     html: `
       <div class="screen-container">
-        <h2>${userName}님, 물건을 선택하세요</h2>
+        <h2 class="select-item-title">${userName}님, 물건을 선택하세요</h2>
         ${itemButtons.map(b => b.html).join("")}
-        <div class="action-button-wrapper">${nextHtml}</div>
+        <div class="item-next-wrapper">${nextHtml}</div>
       </div>
     `,
     handlers: Object.assign({}, ...itemButtons.map(b => b.handlers), nextHandlers),
