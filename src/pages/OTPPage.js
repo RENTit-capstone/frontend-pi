@@ -28,20 +28,23 @@ export const OTPPage = ({ action, onVerified, otp, setOtp }) => {
       id: `digit-${digit}`,
       label: digit,
       onClick: () => appendDigit(digit),
+      className: "otp-keypad-button"
     });
     return { html, handlers };
   });
 
   const { html: clearHtml, handlers: clearHandlers } = Button({
     id: "clear",
-    label: "지우기",
+    label: "🧹",
     onClick: clearOtp,
+    className: "otp-keypad-button"
   });
 
   const { html: backHtml, handlers: backHandlers } = Button({
     id: "backspace",
-    label: "←",
+    label: "⌫",
     onClick: deleteLast,
+    className: "otp-keypad-button"
   });
 
   const { html: submitHtml, handlers: submitHandlers } = Button({
