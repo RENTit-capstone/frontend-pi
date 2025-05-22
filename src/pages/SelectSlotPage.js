@@ -10,7 +10,13 @@ export const SelectSlotPage = ({ availableSlots, selectedSlot, setSelectedSlot, 
       label: `${lockerId}번 칸`,
       onClick: () => setSelectedSlot(lockerId),
     });
-    return { html, handlers };
+
+    const isSelected = selectedSlot() === lockerId;
+    const fianlHtml = html.replace(
+      `<button`,
+      `<button class="select-slot-button${isSelected ? " selected" : ""}"`
+    );
+    return { html: fianlHtml, handlers };
   });
 
   const { html: confirmButtonHtml, handlers: confirmButtonHandlers } = Button({
@@ -26,9 +32,9 @@ export const SelectSlotPage = ({ availableSlots, selectedSlot, setSelectedSlot, 
   return {
     html: `
       <div class="screen-container">
-        <h2>사용할 칸을 선택하세요</h2>
+        <h2 class="select-slot-title">사용할 칸을 선택하세요</h2>
         ${slotButtons.map((button) => button.html).join("")}
-        <div class="action-button-wrapper">${confirmButtonHtml}</div>
+        <div class="select-slot-confirm-wrapper">${confirmButtonHtml}</div>
       </div>
     `,
     handlers: Object.assign({}, ...slotButtons.map((button) => button.handlers), confirmButtonHandlers),

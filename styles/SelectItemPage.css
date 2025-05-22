@@ -1,0 +1,65 @@
+.select-item-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* 아이템 버튼 */
+.select-item-button {
+  width: 80%;
+  max-width: 600px;
+  padding: var(--main-padding);
+  font-size: var(--main-font-size);
+  margin-bottom: 16px;
+  border-radius: var(--main-border-radius);
+  background-color: #e0e0e0;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  border: none; /* ✅ 테두리 제거 */
+}
+
+
+/* ✅ 선택된 항목 스타일 추가 */
+.select-item-button.selected {
+  border: 2px solid #007bff;
+  background-color: #d6eaff;
+  box-shadow: 0 0 6px rgba(0,123,255,0.2);
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+/* 선택 불가 항목 (비활성화) */
+.select-item-button.disabled {
+  background-color: #f2f2f2;
+  color: #aaa;
+  border: 1px dashed #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* "다음" 버튼 래퍼 */
+.select-item-next-wrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+/* "다음" 버튼 자체 */
+.select-item-next-wrapper button {
+  width: 160px;
+  height: 48px;
+  font-size: 1.1rem;
+  border-radius: var(--main-border-radius);
+  border: none;
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+.select-item-next-wrapper button:hover {
+  background-color: #d0d0d0;
+}
