@@ -1,0 +1,50 @@
+.display-slot-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  height: 100vh;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+.display-slot-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--color-primary);
+}
+
+.display-slot-message {
+  font-size: 1.1rem;
+  margin-bottom: 28px;
+  text-align: center;
+  color: var(--color-text);
+  margin-bottom: 28px;
+}
+
+.display-slot-button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.display-slot-button {
+  width: 160px;
+  height: 48px;
+  font-size: 1.1rem;
+  padding: 10px 20px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--main-border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.display-slot-button:hover {
+  background-color: #364256;
+  transform: translateY(-2px);
+}

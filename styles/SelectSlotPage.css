@@ -1,0 +1,58 @@
+.select-slot-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* 사물함 버튼 */
+.select-slot-button {
+  width: 80%;
+  max-width: 600px;
+  padding: var(--main-padding);
+  font-size: var(--main-font-size);
+  margin-bottom: 16px;
+  border-radius: var(--main-border-radius);
+  background-color: var(--color-option);
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  color: var(--color-text);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+/* 선택된 칸 */
+.select-slot-button.selected {
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: bold;
+}
+
+.select-slot-button:hover {
+  background-color: #c6c6ca;
+}
+
+/* 확인 버튼 */
+.select-slot-confirm-wrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.select-slot-confirm-wrapper button {
+  width: 160px;
+  height: 48px;
+  font-size: 1.1rem;
+  border-radius: var(--main-border-radius);
+  border: none;
+  background-color: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.select-slot-confirm-wrapper button:hover {
+  background-color: #2f3e4e;
+}

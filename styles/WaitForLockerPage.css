@@ -1,0 +1,28 @@
+.wait-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: center;
+  color: var(--color-primary);
+}
+
+.wait-message {
+  font-size: 1.1rem;
+  color: var(--color-text); /* optionText */
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.wait-sub {
+  font-size: 0.95rem;
+  color: #999;
+  text-align: center;
+  animation: pulse 1.6s infinite;
+}
+
+/* 🔁 간단한 로딩 애니메이션 */
+@keyframes pulse {
+  0%   { opacity: 0.3; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.3; }
+}

@@ -1,0 +1,70 @@
+.select-item-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: center;
+  color: var(--color-primary);
+}
+
+.select-item-button {
+  width: 80%;
+  max-width: 600px;
+  padding: var(--main-padding);
+  font-size: var(--main-font-size);
+  margin-bottom: 16px;
+  border-radius: var(--main-border-radius);
+  background-color: var(--color-option);
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  color: var(--color-text);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.select-item-button:hover {
+  background-color: #c6c6ca;
+}
+
+.select-item-button.selected {
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: bold;
+}
+
+.select-item-button.disabled {
+  background-color: #f2f2f2;
+  color: #aaa;
+  border: 1px dashed #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.select-item-next-wrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.select-item-next-button {
+  width: 160px;
+  height: auto; /* ✅ 고정 높이 제거 */
+  padding: 12px 0; /* ✅ 상하 패딩만 줘서 높이 확보 */
+  font-size: 1.1rem;
+  line-height: 1.5; /* ✅ 텍스트 줄바꿈 방지 */
+  border-radius: var(--main-border-radius);
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  text-align: center;
+  white-space: nowrap; /* ✅ 텍스트 줄바꿈 방지 */
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.select-item-next-button:hover {
+  background-color: #2f3c4f;
+}
